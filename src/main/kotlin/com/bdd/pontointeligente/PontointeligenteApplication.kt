@@ -5,6 +5,7 @@ import com.bdd.pontointeligente.documents.Funcionario
 import com.bdd.pontointeligente.enums.PerfilEnum
 import com.bdd.pontointeligente.repositories.EmpresaRepository
 import com.bdd.pontointeligente.repositories.FuncionarioRepository
+import com.bdd.pontointeligente.repositories.LancamentoRepository
 import com.bdd.pontointeligente.utils.SenhaUtils
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -12,13 +13,15 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication
 class PontointeligenteApplication(val empresaRepository: EmpresaRepository,
-								  val funcionarioRepository: FuncionarioRepository) : CommandLineRunner {
+								  val funcionarioRepository: FuncionarioRepository,
+								  val lancamentoRepository: LancamentoRepository) : CommandLineRunner {
 
 	/*CommandLineRunner  = assim que carregar a apliacao será executado o método run()*/
 
 	override fun run(vararg args: String?) {
 		empresaRepository.deleteAll()
 		funcionarioRepository.deleteAll()
+		lancamentoRepository.deleteAll()
 
 		//val empresa: Empresa = Empresa("Empresa", "10443887000146")
 		//empresaRepository.save(empresa)
