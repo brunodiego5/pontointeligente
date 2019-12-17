@@ -18,7 +18,7 @@ data class CadastroPFDto (
         val email: String = "",
 
         @get:NotEmpty(message = "Senha não pode ser vazia.")
-        val senha: String? = "",
+        val senha: String = "",
 
         @get:NotEmpty(message = "CPF não pode ser vazio.")
         @get:CPF(message = "CPF inválido")

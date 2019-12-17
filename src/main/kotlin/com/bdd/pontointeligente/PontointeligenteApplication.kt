@@ -23,23 +23,21 @@ class PontointeligenteApplication(val empresaRepository: EmpresaRepository,
 		funcionarioRepository.deleteAll()
 		lancamentoRepository.deleteAll()
 
-		//val empresa: Empresa = Empresa("Empresa", "10443887000146")
-		//empresaRepository.save(empresa)
-
 		val empresa: Empresa = empresaRepository.save(Empresa("Empresa", "10443887000146"))
-		//empresaRepository.save(empresa)
 
-		val admin: Funcionario = Funcionario("Admin", "admin@empresa.com",
-				SenhaUtils().gerarBcrypt("123456"), "25708317000",
-				PerfilEnum.ROLE_ADMIN, empresa.id!!) /*" !! => sempre vai existir um id "*/
-		funcionarioRepository.save(admin)
+		val admin: Funcionario = funcionarioRepository.save(
+				Funcionario("Admin", "admin@empresa.com",
+						SenhaUtils().gerarBcrypt("123456"), "25708317000",
+						PerfilEnum.ROLE_ADMIN, empresa.id!!) /*" !! => sempre vai existir um id "*/
+		)
 
-		val funcionario: Funcionario = Funcionario("Funcionario",
-				"funcionario@empresa.com", SenhaUtils().gerarBcrypt("123456"),
-				"44325441557", PerfilEnum.ROLE_USUARIO, empresa.id!!)
-		funcionarioRepository.save(funcionario)
+		val funcionario: Funcionario = funcionarioRepository.save(
+				Funcionario("Funcionario",
+					"funcionario@empresa.com", SenhaUtils().gerarBcrypt("123456"),
+					"44325441557", PerfilEnum.ROLE_USUARIO, empresa.id!!)
+		)
 
-		println("Empresa ID: " + empresa.id)
+ 		println("Empresa ID: " + empresa.id)
 		println("Admin ID: " + admin.id)
 		println("Funcionario ID: " + funcionario.id)
 

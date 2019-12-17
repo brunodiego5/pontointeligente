@@ -35,7 +35,7 @@ class LancamentoController(val lancamentoService: LancamentoService,
     fun adicionar(@Valid @RequestBody lancamentoDto: LancamentoDto,
                   result: BindingResult): ResponseEntity<Response<LancamentoDto>> {
         val response: Response<LancamentoDto> = Response<LancamentoDto>()
-        validarFuncioFuncionario(lancamentoDto, result)
+        validarFuncionario(lancamentoDto, result)
 
         if (result.hasErrors()) {
             for (erro in result.allErrors) response.erros.add(erro.defaultMessage!!)
@@ -43,8 +43,8 @@ class LancamentoController(val lancamentoService: LancamentoService,
         }
 
         val lancamento: Lancamento = convertDtoParaLancamento(lancamentoDto, result)
-        lancamentoService.persistir(lancamento)
-        response.data = converterLancamentoDto(lancamento)
+        val lancamentoSalvo = lancamentoService.persistir(lancamento)
+        response.data = converterLancamentoDto(lancamentoSalvo)
         return ResponseEntity.ok(response)
     }
 
@@ -63,7 +63,7 @@ class LancamentoController(val lancamentoService: LancamentoService,
         return ResponseEntity.ok(response)
     }
 
-    @GetMapping("/funcinario/{funcionarioId}")
+    @GetMapping("/funcionario/{funcionarioId}")
     fun listarPorFuncioanrioId(@PathVariable(value = "funcionarioId") funcionarioId: String,
                                @RequestParam(value = "pag", defaultValue = "0") pag: Int,
                                @RequestParam(value = "ord", defaultValue = "id") ord: String,
@@ -82,6 +82,45 @@ class LancamentoController(val lancamentoService: LancamentoService,
         response.data = lancamentoDto
 
         return ResponseEntity.ok(response)
+
+
+    }
+
+    @PutMapping("/{id}")
+    fun atualizar(@PathVariable(value = "id") id: String, @Valid @RequestBody lancamentoDto: LancamentoDto,
+                  result: BindingResult): ResponseEntity<Response<LancamentoDto>> {
+
+        val response: Response<LancamentoDto> = Response<LancamentoDto>()
+        validarFuncionario(lancamentoDto, result)
+        lancamentoDto.id = id
+
+        val lancamento: Lancamento = convertDtoParaLancamento(lancamentoDto, result)
+
+        if (result.hasErrors()) {
+            for (erro in result.allErrors) response.erros.add(erro.defaultMessage!!) /*!! => estou garantindo que virá msg*/
+            return ResponseEntity.badRequest().body(response)
+        }
+
+        lancamentoService.persistir(lancamento)
+        response.data = converterLancamentoDto(lancamento)
+
+        return ResponseEntity.ok(response)
+
+    }
+
+    @DeleteMapping("/{id}")
+    fun remover(@PathVariable("id") id: String): ResponseEntity<Response<String>> {
+
+        val response: Response<String> = Response<String>()
+        val lancamento: Lancamento? = lancamentoService.buscarPorId(id)
+
+        if (lancamento == null) {
+            response.erros.add("Erro ao remover lançamento. Registro não encontrado para o id $id")
+            return ResponseEntity.badRequest().body(response)
+        }
+
+        lancamentoService.remover(id)
+        return ResponseEntity.ok(Response<String>())
 
 
     }
@@ -106,7 +145,7 @@ class LancamentoController(val lancamentoService: LancamentoService,
                 lancamentoDto.localizacao, lancamentoDto.id)
     }
 
-    private fun validarFuncioFuncionario(lancamentoDto: LancamentoDto, result: BindingResult) {
+    private fun validarFuncionario(lancamentoDto: LancamentoDto, result: BindingResult) {
         if (lancamentoDto.funcionarioId == null) {
             result.addError(ObjectError("funcionario",
                     "Funcionário não informado"))
