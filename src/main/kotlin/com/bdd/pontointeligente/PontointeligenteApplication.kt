@@ -12,38 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class PontointeligenteApplication(val empresaRepository: EmpresaRepository,
-								  val funcionarioRepository: FuncionarioRepository,
-								  val lancamentoRepository: LancamentoRepository) : CommandLineRunner {
-
-	/*CommandLineRunner  = assim que carregar a apliacao será executado o método run()*/
-
-	override fun run(vararg args: String?) {
-		empresaRepository.deleteAll()
-		funcionarioRepository.deleteAll()
-		lancamentoRepository.deleteAll()
-
-		val empresa: Empresa = empresaRepository.save(Empresa("Empresa", "10443887000146"))
-
-		val admin: Funcionario = funcionarioRepository.save(
-				Funcionario("Admin", "admin@empresa.com",
-						SenhaUtils().gerarBcrypt("123456"), "25708317000",
-						PerfilEnum.ROLE_ADMIN, empresa.id!!) /*" !! => sempre vai existir um id "*/
-		)
-
-		val funcionario: Funcionario = funcionarioRepository.save(
-				Funcionario("Funcionario",
-					"funcionario@empresa.com", SenhaUtils().gerarBcrypt("123456"),
-					"44325441557", PerfilEnum.ROLE_USUARIO, empresa.id!!)
-		)
-
- 		println("Empresa ID: " + empresa.id)
-		println("Admin ID: " + admin.id)
-		println("Funcionario ID: " + funcionario.id)
-
-	}
-
-}
+class PontointeligenteApplication
 
 fun main(args: Array<String>) {
 	runApplication<PontointeligenteApplication>(*args)
